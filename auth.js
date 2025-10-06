@@ -10,8 +10,8 @@ const saltRounds = 10
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
-let refreshTokens = []
 let users = []
+let refreshTokens = []
 
 app.post('/register', async(req, res) => {
     try{
@@ -28,7 +28,7 @@ app.post('/register', async(req, res) => {
     }
 })
 
-app.get('/refresh-get', (req, res) => {
+app.get('/register-get', (req, res) => {
     res.json(users)
 })
 
@@ -42,8 +42,8 @@ app.post('/login', async(req, res) => {
   
   try{
     if(await bcrypt.compareSync(req.body.password, user.password)) {
-        const accessToken = jwt.sign({username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'})
-        const refreshToken = jwt.sign({username}, process.env.REFRESH_TOKEN_SECRET)
+        const accessToken = jwt.sign({username: user.username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'})
+        const refreshToken = jwt.sign({username: user.username}, process.env.REFRESH_TOKEN_SECRET)
 
         refreshTokens.push(refreshToken)
         res.json({accessToken, refreshToken})
