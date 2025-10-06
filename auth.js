@@ -3,21 +3,57 @@ const app = express()
 const port = 5000
 require('dotenv').config()
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+
+const saltRounds = 10
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
 let refreshTokens = []
+let users = []
 
-app.post('/login', (req, res) => {
-  const username = req.body.username
+app.post('/register', async(req, res) => {
+    try{
+        const username = req.body.username
+        const password = req.body.password
+        
+        const hash = await bcrypt.hashSync(password, saltRounds)
+        const user = {username, password: hash}
+        users.push(user)
 
-  const accessToken = jwt.sign({username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'})
-  const refreshToken = jwt.sign({username}, process.env.REFRESH_TOKEN_SECRET)
+        res.sendStatus(200)
+    } catch{
+        res.sendStatus(500)
+    }
+})
 
-  refreshTokens.push(refreshToken)
+app.get('/refresh-get', (req, res) => {
+    res.json(users)
+})
 
-  res.json({accessToken, refreshToken})
+app.post('/login', async(req, res) => {
+  const user = users.find(user => user.username === req.body.username)
+
+  if(!user) {
+    res.sendStatus(400)
+    return
+  }
+  
+  try{
+    if(await bcrypt.compareSync(req.body.password, user.password)) {
+        const accessToken = jwt.sign({username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'})
+        const refreshToken = jwt.sign({username}, process.env.REFRESH_TOKEN_SECRET)
+
+        refreshTokens.push(refreshToken)
+        res.json({accessToken, refreshToken})
+    } else {
+      res.sendStatus(404)
+      return
+    }
+  } catch{
+    res.sendStatus(500)
+    }
 })
 
 app.post('/refresh-token', (req, res) => {
@@ -38,7 +74,6 @@ app.post('/refresh-token', (req, res) => {
                 return
             } else {
                 const accessToken = jwt.sign({username: data.username}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '30s'})
-                
                 res.json({accessToken})
             }
         })
@@ -46,9 +81,9 @@ app.post('/refresh-token', (req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    const refreshToken = req.body.token
+    const token = req.body.token
 
-    refreshTokens = refreshTokens.filter(refToken => refToken !== refreshToken)
+    refreshTokens = refreshTokens.filter(refreshToken => refreshToken !== token)
     res.sendStatus(200)
 })
 

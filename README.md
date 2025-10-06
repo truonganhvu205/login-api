@@ -12,6 +12,7 @@ npm init
 npm i express
 npm install dotenv --save
 npm install jsonwebtoken
+npm install bcrypt
 
 npm i nodemon --save-dev
 ```
