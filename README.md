@@ -1,18 +1,19 @@
 ### Description
 
-Knowing about JWT & learning the concept of authentication.
+Knowing about JWT & learning the concept of authentication & authorization.
 
 [Download Postman](https://www.postman.com/downloads/)
 
 ### npm Packages
 
 ```
-npm init
+npm init -y
 
-npm i express
+npm install express
 npm install dotenv --save
+
 npm install jsonwebtoken
 npm install bcrypt
 
-npm i nodemon --save-dev
+npm install --save-dev nodemon
 ```
