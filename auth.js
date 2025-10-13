@@ -32,13 +32,16 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/register-get', (req, res) => {
-    res.json(users)
+    return res.json(users)
 })
 
 app.post('/login', (req, res) => {
     const {username, password} = req.body
+    if(!username || !password) {
+        return res.sendStatus(400)
+    }
+    
     const user = users.find(user => user.username === username)
-
     if(!user) {
         return res.sendStatus(401)
     }
@@ -48,13 +51,13 @@ app.post('/login', (req, res) => {
         const refreshToken = generateRefreshKey(user.username)
         refreshTokens.push(refreshToken)
         
-        res.json({accessToken, refreshToken})
+        return res.json({accessToken, refreshToken})
     } else {
         return res.sendStatus(403)
     }
 })
 
-app.post('/refresh-token', (req, res) => {
+app.post('/refresh-token', async (req, res) => {
     const refreshToken = req.body.token
 
     if(!refreshToken) {
@@ -63,10 +66,14 @@ app.post('/refresh-token', (req, res) => {
 
     if(!refreshTokens.includes(refreshToken)) {
         return res.sendStatus(403)
-    } else {
-        const newAccessToken = generateAccessKey(refreshToken)
+    }
+
+    try {
+        const newAccessToken = await verifyRefreshKey(refreshToken)
         
-        res.json({newAccessToken})
+        return res.json({newAccessToken})
+    } catch(err) {
+        return res.status(403).json({message: err})
     }
 })
 
