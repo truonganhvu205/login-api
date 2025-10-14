@@ -1,4 +1,4 @@
-const {usersDb} = require('./app/databases')
+const {usersDb} = require('../../../databases')
 
 function verifyUserRegister(req, res, next) {
     const {username} = req.body

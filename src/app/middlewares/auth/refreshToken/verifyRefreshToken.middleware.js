@@ -1,4 +1,4 @@
-const {refreshTokensDb} = require('./app/databases')
+const {refreshTokensDb} = require('../../../databases')
 const {refreshToken} = require('../../../configs')
 
 function verifyRefreshToken(req, res, next) {
