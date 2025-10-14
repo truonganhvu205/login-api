@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
-const {portServer} = require('./config')
-const {authUser} = require('./middlewares')
+const {serverPort} = require('./app/configs')
+const {authUser} = require('./app/middlewares')
 
 app.use(express.urlencoded({extended: true}))
 app.use(express.json())
@@ -37,4 +37,4 @@ app.get('/people', authUser, (req, res) => {
   res.json(people)
 })
 
-app.listen(portServer)
+app.listen(serverPort)
