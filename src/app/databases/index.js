@@ -1,4 +1,3 @@
-const usersDb = require('./auth/users.database')
-const refreshTokensDb = require('./auth/refreshTokens.database')
+const authDbs = require('./auth')
 
-module.exports = {usersDb, refreshTokensDb}
+module.exports = {...authDbs}

@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken')
-const {accessToken, refreshToken} = require('../../configs')
+const {accessTokenSecretKey, refreshTokenSecretKey} = require('../../configs')
 
-const generateAccessKey = payload => jwt.sign({payload}, accessToken, {expiresIn: '60s'})
-const generateRefreshKey = payload => jwt.sign({payload}, refreshToken)
+let generateAccessKey = payload => jwt.sign({username: payload}, accessTokenSecretKey, {expiresIn: '60s'})
+let generateRefreshKey = payload => jwt.sign({username: payload}, refreshTokenSecretKey)
 
 // const verifyRefreshKey = payload => {
 //     return new Promise((resolve, reject) => {
-//         jwt.verify(payload, refreshToken, (err, data) => {
+//         jwt.verify(payload, refreshTokenSecretKey, (err, data) => {
 //             if(err) {
 //                 reject(err)
 //             } else {

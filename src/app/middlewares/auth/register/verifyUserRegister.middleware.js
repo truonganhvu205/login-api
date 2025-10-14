@@ -3,7 +3,7 @@ const {usersDb} = require('../../../databases')
 function verifyUserRegister(req, res, next) {
     const {username} = req.body
 
-    let user = usersDb.find(user => user.username === username)
+    const user = usersDb.find(user => user.username === username)
     if(user) {
         return res.sendStatus(409)
     }

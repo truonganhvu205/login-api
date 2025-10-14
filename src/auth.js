@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const {authPort} = require('./app/configs')
-const {usersDb, refreshTokensDb} = require('./app/databases')
+let {usersDb, refreshTokensDb} = require('./app/databases')
 const {
     validateLoginInput, 
     verifyUserLogin, 
@@ -57,8 +57,8 @@ app.post('/refresh-token', verifyRefreshToken, async(req, res) => {
 })
 
 app.post('/logout', verifyRefreshToken, (req, res) => {
-    const {refreshToken} = req.body
-    
+    const refreshToken = req.body.token
+
     refreshTokensDb = refreshTokensDb.filter(refreshTokenDb => refreshTokenDb !== refreshToken)
     return res.sendStatus(200)
 })

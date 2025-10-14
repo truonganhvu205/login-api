@@ -1,17 +1,18 @@
+const jwt = require('jsonwebtoken')
 const {refreshTokensDb} = require('../../../databases')
-const {refreshToken} = require('../../../configs')
+const {refreshTokenSecretKey} = require('../../../configs')
 
 function verifyRefreshToken(req, res, next) {
-    const {token} = req.body
-    if(!token) {
+    const refreshToken = req.body.token
+    if(!refreshToken) {
         return res.sendStatus(401)
     }
 
-    if(!refreshTokensDb.includes(token)) {
+    if(!refreshTokensDb.includes(refreshToken)) {
         return res.sendStatus(403)
     }
 
-    jwt.verify(token, refreshToken, (err, data) => {
+    jwt.verify(refreshToken, refreshTokenSecretKey, (err, data) => {
         if(err) {
             return res.sendStatus(403)
         }

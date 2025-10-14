@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const {accessToken} = require('../../configs')
+const {accessTokenSecretKey} = require('../../configs')
 
 function authUser(req, res, next) {
     const authorizationHeader = req.headers['authorization']
@@ -9,7 +9,7 @@ function authUser(req, res, next) {
         return res.sendStatus(401)
     }
 
-    jwt.verify(token, accessToken, (err, data) => {
+    jwt.verify(token, accessTokenSecretKey, (err, data) => {
         if(err) {
             return res.sendStatus(403)
         } else {
