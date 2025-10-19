@@ -1,0 +1,64 @@
+const {usersDb, refreshTokensDb} = require('../../databases')
+const {
+    hashPass, 
+    generateAccessKey, 
+    generateRefreshKey, 
+} = require('../../utils')
+
+class AuthController {
+    // POST /user/register
+    userRegister(req, res) {
+        const {username, password} = req.body
+        const hash = hashPass(password)
+
+        const user = {username, password: hash}
+        usersDb.push(user)
+
+        return res.sendStatus(201)
+    }
+
+    // GET /user/register-get
+    userRegisterGet(req, res) {
+        return res.json(usersDb)
+    }
+
+    // POST /user/login
+    userLogin(req, res) {
+        const user = req.user
+
+        const accessToken = generateAccessKey(user.username)
+        const refreshToken = generateRefreshKey(user.username)
+        refreshTokensDb.push(refreshToken)
+        
+        return res.json({accessToken, refreshToken})
+    }
+
+    // POST /user/refresh-token
+    async userRefreshToken(req, res) {
+        try{
+            const user = req.user
+            if(!user || !user.username) {
+                return res.sendStatus(403)
+            }
+
+            const accessToken = generateAccessKey(user.username)
+            return res.json({accessToken})
+        } catch(err) {
+            return res.sendStatus(500)
+        }
+    }
+
+    // POST /user/logout
+    userLogout(req, res) {
+        const refreshToken = req.body.token
+
+        var index = refreshTokensDb.indexOf(refreshToken)
+        if(index !== -1) {
+            refreshTokensDb.splice(index, 1)
+        }
+
+        return res.sendStatus(200)
+    }
+}
+
+module.exports = new AuthController()
