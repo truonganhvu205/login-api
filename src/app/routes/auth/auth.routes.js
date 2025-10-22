@@ -14,7 +14,7 @@ router.post('/register',
     verifyUserRegister,
     authController.userRegister)
     
-router.get('/register-get', authController.userRegisterGet)
+// router.get('/register-get', authController.userRegisterGet)
 
 router.post('/login',
     validateLoginInput,

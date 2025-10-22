@@ -18,9 +18,9 @@ class AuthController {
     }
 
     // GET /user/register-get
-    userRegisterGet(req, res) {
-        return res.json(usersDb)
-    }
+    // userRegisterGet(req, res) {
+    //     return res.json(usersDb)
+    // }
 
     // POST /user/login
     userLogin(req, res) {
@@ -65,8 +65,8 @@ class AuthController {
     // POST /user/logout
     userLogout(req, res) {
         const refreshToken = req.body.token
+        const index = refreshTokensDb.indexOf(refreshToken)
 
-        var index = refreshTokensDb.indexOf(refreshToken)
         if(index !== -1) {
             refreshTokensDb.splice(index, 1)
         }
