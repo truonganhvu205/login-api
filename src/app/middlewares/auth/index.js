@@ -4,14 +4,16 @@ const verifyUserLogin = require('./login/verifyUserLogin.middleware')
 const validateRegisterInput = require('./register/validateRegisterInput.middleware')
 const verifyUserRegister = require('./register/verifyUserRegister.middleware')
 const verifyRefreshToken = require('./refreshToken/verifyRefreshToken.middleware')
+const authRole = require('./authRole.middleware')
 
 const authMiddlewares = {
-    authUser, 
-    validateLoginInput, 
-    verifyUserLogin, 
-    validateRegisterInput, 
-    verifyUserRegister, 
-    verifyRefreshToken, 
+    authUser,
+    validateLoginInput,
+    verifyUserLogin,
+    validateRegisterInput,
+    verifyUserRegister,
+    verifyRefreshToken,
+    authRole,
 }
 
 module.exports = authMiddlewares

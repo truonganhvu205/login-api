@@ -1,17 +1,17 @@
 const {usersDb, refreshTokensDb} = require('../../databases')
 const {
-    hashPass, 
-    generateAccessKey, 
-    generateRefreshKey, 
+    hashPass,
+    generateAccessKey,
+    generateRefreshKey,
 } = require('../../utils')
 
 class AuthController {
     // POST /user/register
     userRegister(req, res) {
-        const {username, password} = req.body
+        const {username, password, role = 1} = req.body
         const hash = hashPass(password)
 
-        const user = {username, password: hash}
+        const user = {username, password: hash, role: role}
         usersDb.push(user)
 
         return res.sendStatus(201)
@@ -25,11 +25,20 @@ class AuthController {
     // POST /user/login
     userLogin(req, res) {
         const user = req.user
+        const accessToken = generateAccessKey(
+            {
+                username: user.username,
+                role: user.role,
+            }
+        )
+        const refreshToken = generateRefreshKey(
+            {
+                username: user.username,
+                role: user.role,
+            }
+        )
 
-        const accessToken = generateAccessKey(user.username)
-        const refreshToken = generateRefreshKey(user.username)
         refreshTokensDb.push(refreshToken)
-        
         return res.json({accessToken, refreshToken})
     }
 
@@ -41,7 +50,12 @@ class AuthController {
                 return res.sendStatus(403)
             }
 
-            const accessToken = generateAccessKey(user.username)
+            const accessToken = generateAccessKey(
+                {
+                    username: user.username,
+                    role: user.role,
+                }
+            )
             return res.json({accessToken})
         } catch(err) {
             return res.sendStatus(500)

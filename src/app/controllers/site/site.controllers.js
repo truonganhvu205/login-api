@@ -1,13 +1,4 @@
-const people = [
-    {
-        id: 1,
-        name: 'user1',
-    }, 
-    {
-        id: 2,
-        name: 'user2',
-    }, 
-]
+const {users} = require('../../databases')
 
 class SiteController {
     // GET /
@@ -17,7 +8,7 @@ class SiteController {
 
     // GET /people
     showList(req, res) {
-        res.json(people)
+        res.json(users)
     }
 }
 

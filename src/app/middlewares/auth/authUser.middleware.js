@@ -13,6 +13,7 @@ function authUser(req, res, next) {
         if(err) {
             return res.sendStatus(403)
         } else {
+            req.user = data
             next()
         }
     })
